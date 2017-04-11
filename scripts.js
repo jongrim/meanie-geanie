@@ -25,7 +25,7 @@ var gameState = {
     ],
     stones: [],
     phase: 0,
-    weighings: 0
+    weighings: []
 }
 
 function Stone(weight) {
@@ -43,7 +43,7 @@ function advanceGame() {
             jewels.forEach(jewel => removeHidden(jewel));
             jewels.forEach(jewel => removeActive(jewel));
             gameState.stones = makeStones();
-            gameState.weighings = 0;
+            gameState.weighings = [];
             setButtonToContinue();
             setPhase();
             break;
@@ -69,7 +69,6 @@ function advanceGame() {
                 break;
             }
 
-            gameState.weighings++;
             setDialog(3);
 
             break;
@@ -171,8 +170,8 @@ function retrieveSelectedStones(resetFlag) {
 }
 
 function weighStones(leftSide, rightSide) {
+    gameState.weighings.push([leftSide.length, rightSide.length]);
     let gameStones = gameState.stones;
-    // console.log("Left side is:", leftSide, "Right side is:", rightSide);
     let nonSelectedStones = [];
     for (var i = 0; i < gameStones.length; i++) {
         var curStoneId = gameStones[i].id;
@@ -214,7 +213,9 @@ function setStonesActive() {
 }
 
 function determineSuccess(remainingStones) {
-    if (remainingStones.length == 1 && remainingStones[0].weight == 2) {
+    if (remainingStones.length == 1 && remainingStones[0].weight == 2 &&
+        compareArrays(gameState.weighings[0], [3, 3]) &&
+        compareArrays(gameState.weighings[1], [1, 1])) {
         return true;
     } else {
         return false;
@@ -222,7 +223,7 @@ function determineSuccess(remainingStones) {
 }
 
 function continueGame(currentStones) {
-    if (currentStones.length > 1 && gameState.weighings < 2) {
+    if (currentStones.length > 1 && gameState.weighings.length < 2) {
         return true;
     } else {
         return false;
@@ -237,4 +238,16 @@ function validateSelection() {
         setPhase();
         advanceGame();
     }
+}
+
+function compareArrays(arrayA, arrayB) {
+    if (arrayA.length != arrayB.length) {
+        return false;
+    }
+    for (var i = 0; i < arrayA.length; i++){
+        if (arrayA[i] !== arrayB[i]) {
+            return false;
+        }
+    }
+    return true;
 }
