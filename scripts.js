@@ -20,7 +20,7 @@ var gameState = {
         "Sorry, you didn't find the Ramanujan this time. Better luck next time. Click Continue if you would like to play "
         + "again.",
         "You have discovered the Ramanujan, though you have not correctly solved this puzzle. The correct method "
-        + "requires two weighings to be sure you will always find the Ramanujan. Click Continue if you would like "
+        + "requires two weighings to be sure you will always find the Ramanujan. Click Play Again if you would like "
         + "to play again."
     ],
     stones: [],
@@ -43,6 +43,8 @@ function advanceGame() {
             jewels.forEach(jewel => removeHidden(jewel));
             jewels.forEach(jewel => removeActive(jewel));
             gameState.stones = makeStones();
+            gameState.weighings = 0;
+            setButtonToContinue();
             setPhase();
             break;
         case 1: // user is asked to choose the first set of stones for weighing    
@@ -137,6 +139,10 @@ function setButtonToGameMode() {
     btn.setAttribute("value", "Select Stones");
 }
 
+function setButtonToContinue() {
+    btn.setAttribute('value', 'Continue');
+}
+
 function makeStones() {
     let stones = [];
     for (var i = 0; i < 8; i++) {
@@ -200,7 +206,6 @@ function setStonesActive() {
     let activeStones = [];
     for (var i = 0; i < stones.length; i++) {
         if (stones[i].id != null) {
-            console.log(stones[i]);
             document.querySelector(`#jewel${stones[i].id}`).classList.remove('hidden');
             activeStones.push(stones[i]);
         }
