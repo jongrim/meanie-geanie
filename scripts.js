@@ -16,8 +16,8 @@ var gameState = {
         + "would like to weigh on the left side next. You have one weighing remaining.",
         "And finally, select which stone or stones to weigh on the right. We will then determine if you have correctly solved "
         + "how to find the Ramanujan.",
-        "Congratulations, you have correctly solved for the Ramanujan. Click Continue if you would like to play again.",
-        "Sorry, you didn't find the Ramanujan this time. Better luck next time. Click Continue if you would like to play "
+        "Congratulations, you have correctly solved for the Ramanujan. Click Play Again if you would like to play again.",
+        "Sorry, you didn't find the Ramanujan this time. Better luck next time. Click Play Again if you would like to play "
         + "again.",
         "You have discovered the Ramanujan, though you have not correctly solved this puzzle. The correct method "
         + "requires two weighings to be sure you will always find the Ramanujan. Click Play Again if you would like "
