@@ -12,10 +12,14 @@ var gameState = {
         + "two opportunities to weigh the stones and elimate options. Can you discover which stone contains the Ramanujan?",
         "Please select the group of stones you would like to weigh on the left side of the scale.",
         "Please select the group of stones you would like to weigh on the right side of the scale.",
-        "The stones have been weighed, and the lighest removed. Only these stones remain"
+        "The stones have been weighed, and the lighest removed. Only these stones remain. Please select which stones you "
+        + "would like to weigh on the left side next. You have one weighing remaining.",
+        "And finally, select which stone(s) to weigh on the right. We will then determine if you have correctly solved "
+        + "how to find the Ramanujan."
     ],
     stones: [],
-    phase: 0
+    phase: 0,
+    weighings: 0
 }
 
 function Stone(weight) {
@@ -51,10 +55,19 @@ function advanceGame() {
             setDialog(3);
             weighStones(leftStones, rightStones);
             setStonesActive();
+            gameState.weighings++;
             setPhase();
             break;
         case 4:
-            
+            setDialog(4);
+            leftStones = retrieveSelectedStones();
+            setPhase();
+            break;
+        case 5:
+            rightStones = retrieveSelectedStones();
+            weighStones(leftStones, rightStones);
+            setStonesActive();
+            // determineSuccess(); TODO
             
         default:
             
@@ -80,6 +93,10 @@ function toggleActive() {
     this.classList.toggle('active');
 }
 
+function removeActive(stone) {
+    stone.classList.remove('active');
+}
+
 function makeStones() {
     for (var i = 0; i < 8; i++) {
         gameState.stones.push(new Stone(1));
@@ -88,41 +105,62 @@ function makeStones() {
     gameState.stones.sort(function (a, b) {
         return a.chaos < b.chaos ? -1 : 1;
     });
+    gameState.stones.map((stone, i) => stone.id = i);
 }
 
 function retrieveSelectedStones() {
     let stones = document.querySelectorAll('.active');
     stones.forEach(stone => toggleHidden(stone));
+    stones.forEach(stone => removeActive(stone));
     stones = Array.from(stones);
     let stoneIds = stones.map(stone => Number(stone.id.slice(-1)));
     return stoneIds;
 }
 
 function weighStones(leftSide, rightSide) {
-    console.log("Left side is:", leftSide, "Right side is:", rightSide);
-    let leftWeight = leftSide.reduce((acc, curr) => { return acc += curr.weight });
-    let rightWeight = rightSide.reduce((acc, curr) => { return acc += curr.weight });
+    let gameStones = gameState.stones;
+    // console.log("Left side is:", leftSide, "Right side is:", rightSide);
+    let nonSelectedStones = [];
+    for (var i = 0; i < gameStones.length; i++) {
+        var curStoneId = gameStones[i].id;
+        if (leftSide.includes(curStoneId) || rightSide.includes(curStoneId)) {
+        } else {
+            nonSelectedStones.push(curStoneId);
+        }
+        // console.log("Nonselected stones:" + nonSelectedStones);
+    }
+    let leftWeight = leftSide.reduce((acc, curr) => { return acc += gameStones[curr].weight }, 0);
+    console.log("Weight of left:", leftWeight);
+    let rightWeight = rightSide.reduce((acc, curr) => { return acc += gameStones[curr].weight }, 0);
+    console.log("Weight of right:", rightWeight);
     if (leftWeight > rightWeight) {
-        removeStones(leftSide);
+        removeStones(rightSide.concat(nonSelectedStones));
     } else if (rightWeight > leftWeight) {
-        removeStones(rightSide);
+        removeStones(leftSide.concat(nonSelectedStones));
     } else {
-        removeStones(leftSide);
-        removeStones(rightSide);
+        removeStones(leftSide.concat(rightSide));
     }
 }
 
 function removeStones(stones) {
-    for (var i = 0; i < stones.length; i++) {
-            gameState.stones.splice(stones[i], 1);
+    gameState.stones.map(stone => {
+        if (stones.includes(stone.id)) {
+            stone.id = null;
         }
+    });
 }
 
 function setStonesActive() {
     jewels.forEach(jewel => { jewel.classList.add('hidden') });
     let stones = gameState.stones
     for (var i = 0; i < stones.length; i++) {
-        document.querySelector(`#jewel${stones[i]}`).classList.remove('hidden');
+        if (stones[i].id) {
+            document.querySelector(`#jewel${stones[i].id}`).classList.remove('hidden');
+        }
 
     }
+}
+
+function determineSuccess() {
+    let remainingStones = document.querySelectorAll('active')
 }
