@@ -3,10 +3,10 @@ html {
     color: white;
     font-family: 'Kaushan Script', cursive;
     align-content: center;
-}
-
-body {
-    background-image: url(https://source.unsplash.com/yNGQ830uFB4/1600x900);
+    background-color: rgb(50, 50, 50);
+    background-image: url(https://source.unsplash.com/yNGQ830uFB4/2800x1800);
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 input {
